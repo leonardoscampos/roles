@@ -2,7 +2,7 @@
 #####################
 ### Role options
 #####################
-cloud_net: "brq_net"
+cloud_net: ""
 zabbix_container_restart_policy: "always"
 zabbix_container_state: "started"
 volumes_default_dir: "/dockernovo"
