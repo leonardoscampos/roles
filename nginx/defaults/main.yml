@@ -1,0 +1,34 @@
+---
+#####################
+### Role options
+#####################
+cloud_net: ""
+ipnginx: ""
+nginx_container_name: "nginx_ansible"
+nginx_container_hostname: "{{ nginx_container_name }}_host"
+nginx_container_image: "nginx"
+nginx_container_restart_policy: "always"
+nginx_container_state: "started"
+volumes_default_dir: "/dockernovo"
+nginx_default_dir: "{{ volumes_default_dir }}/nginx"
+nginx_subdir: ["ssl","conf"]
+nginx_src: ["nginx/ssl","nginx/conf"]
+nginx_dest: "{{ nginx_default_dir }}"
+dir_mode: 0775
+
+vol_loop:
+  - vol: "vol_nginx_conf"
+    device: "/dockernovo/nginx/conf"
+  - vol: "vol_nginx_ssl"
+    device: "/dockernovo/nginx/ssl"
+
+nginx_container_volumes:
+  - "vol_nginx_conf:/etc/nginx:rw"
+  - "vol_nginx_ssl:/etc/ssl/private:rw"
+nginx_container_ports:
+  - 9443:443
+  - 8880:80
+
+nginx_container_log_options: {
+  labels: "{{ nginx_container_name }}",
+}
