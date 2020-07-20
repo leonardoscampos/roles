@@ -1,0 +1,22 @@
+---
+  - name: Destroing Graylog container
+    docker_container:
+      name: "{{ item }}"
+      state: absent
+      force_kill: yes
+    with_items: "{{ graylog_containers }}"
+
+  - name: Deleting directory structure
+    file:
+      path: "{{graylog_default_dir}}"
+      state: absent
+    tags:
+      - rmdir
+
+  - name: Deleting Volumes for Nginx
+    docker_volume:
+      name: '{{ item.vol }}'
+      state: absent
+    loop: "{{vol_loop}}"
+    tags:
+      - volume

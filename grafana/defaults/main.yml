@@ -1,0 +1,30 @@
+---
+#####################
+### Role options
+#####################
+cloud_net: "brq_net"
+grafana_container_restart_policy: "always"
+grafana_container_state : "started"
+volumes_default_dir: "/dockernovo"
+grafana_default_dir: "{{ volumes_default_dir }}/grafana"
+grafana_subdir: ["lib"]
+dir_mode: 0775
+
+
+ipgrafana: 172.20.1.32
+grafana_container_name: "grafana_ansible"
+grafana_container_hostname: "{{ grafana_container_name }}_host"
+grafana_container_image: "grafana/grafana"
+grafana_container_ports: "3000"
+grafana_container_volumes:
+  - "vol_grafana_lib:/var/lib/grafana:rw"
+
+vol_loop:
+- vol: "vol_grafana_lib"
+  device: "/dockernovo/grafana/lib"
+
+grafana:
+  server:
+      envs:
+        GF_INSTALL_PLUGINS: "grafana-clock-panel,alexanderzobnin-zabbix-app"
+        GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"

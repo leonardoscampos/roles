@@ -1,0 +1,21 @@
+---
+  - name: Destroing Nginx container
+    docker_container:
+      name: "{{ grafana_container_name }}"
+      state: absent
+      force_kill: yes
+
+  - name: Deleting directory structure
+    file:
+      path: "{{ grafana_default_dir }}"
+      state: absent
+    tags:
+      - rmdir
+
+  - name: Deleting Volumes
+    docker_volume:
+      name: '{{ item.vol }}'
+      state: absent
+    loop: "{{ vol_loop }}"
+    tags:
+      - volume

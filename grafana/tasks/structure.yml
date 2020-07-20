@@ -1,0 +1,8 @@
+---
+  - name: Creating Nginx directory structure
+    file:
+      path: "{{grafana_default_dir}}/{{ item }}"
+      state: directory
+      mode: "{{ dir_mode }}"
+      recurse: yes
+    with_items: "{{ grafana_subdir }}"

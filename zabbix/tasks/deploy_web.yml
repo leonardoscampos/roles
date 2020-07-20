@@ -1,0 +1,25 @@
+---
+  - name: Deploy Zabbix Web container
+    docker_container:
+      name: "{{ zabbix_web_container_name }}"
+      hostname: "{{ zabbix_web_container_hostname }}"
+      image: "{{ zabbix_web_container_image }}"
+      state: "{{ zabbix_container_state }}"
+      restart_policy: "{{ zabbix_container_restart_policy }}"
+      ports: "{{ zabbix_web_container_ports }}"
+      env: "{{ zabbix.web.envs }}"
+      volumes:
+         - "{{ zabbix_ngnix_vol }}"
+         - "{{ zabbix_localtime }}"
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+        interval: 10s
+        timeout: 5s
+        retries: 3
+        start_period: 30s
+      sysctls: "{{ zabbix.web.sysctls }}"
+      networks:
+         - name: "{{ cloud_net }}"
+           ipv4_address: "{{ ipzabweb }}"
+           aliases: "{{ zabbix_web_container_name }}"
+      purge_networks: yes

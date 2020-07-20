@@ -1,0 +1,7 @@
+---
+  - name: Tranfering config to splunk
+    copy:
+      src: "{{ item }}"
+      dest: "{{ splunk_dest }}"
+      mode: "{{ dir_mode }}"
+    with_items: "{{ splunk_src }}"

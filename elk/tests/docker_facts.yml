@@ -1,0 +1,13 @@
+- hosts: cloud
+  vars_files: var_test.yml
+  tasks:
+    - name: Get infos on container
+      docker_container_info:
+        name: elastic_ansible
+      #with_items: ["elastic_ansible","logstash_ansible","kibana_ansible"]
+      register:  result
+#      loop: "{{loop_containers}}"
+
+    - name: Does container exist?
+      debug:
+        msg: "The container {{ 'exists' if result.exists else 'does not exist' }}"

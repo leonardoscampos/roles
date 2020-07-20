@@ -1,0 +1,14 @@
+---
+  - name: Get infos on container
+    docker_container_info:
+      name: "{{ graylog_server_container_name }}"
+    register: result
+    check_mode: yes
+
+  - name: Uninstall Graylog
+    import_tasks: uninstall.yml
+    when: result.exists == true
+
+  - name: Install Graylog
+    import_tasks: install.yml
+    when: result.exists == false

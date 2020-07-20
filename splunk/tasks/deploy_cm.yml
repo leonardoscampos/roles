@@ -1,0 +1,20 @@
+---
+  - name: Deploy Splunk Cluster Master container
+    docker_container:
+      name: "{{ cm_container_name }}"
+      hostname: "{{ cm_container_hostname }}"
+      image: "{{ splunk_container_image }}"
+      state: "{{ splunk_container_state }}"
+      restart_policy: "{{ splunk_container_restart_policy }}"
+      ports: "{{ cm_container_ports }}"
+      env: "{{ splunk.cm.envs }}"
+      volumes:
+         - "{{ splunk_etc_vol }}"
+         - "{{ splunk_var_vol }}"
+         - "{{ splunk_driver_vol }}"
+         - "{{ splunk_defaults_vol }}"
+      networks:
+         - name: "{{ cloud_net }}"
+           ipv4_address: "{{ ipsplkcm }}"
+           aliases: "{{ cm_container_name }}"
+      purge_networks: yes

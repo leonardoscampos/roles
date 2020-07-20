@@ -1,0 +1,7 @@
+---
+  - include: structure.yml
+  - include: config.yml
+  - include: volumes.yml
+  - include: deploy_sh.yml
+  - include: deploy_cm.yml
+  - include: deploy_idx.yml

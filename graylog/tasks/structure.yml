@@ -1,0 +1,8 @@
+---
+  - name: Creating Graylog directory structure
+    file:
+      path: "{{graylog_default_dir}}/{{ item }}"
+      state: directory
+      mode: "{{ dir_mode }}"
+      recurse: yes
+    with_items: "{{ graylog_subdir }}"

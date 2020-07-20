@@ -1,0 +1,79 @@
+---
+#####################
+### Role options
+#####################
+cloud_net: "brq_net"
+elk_container_restart_policy: "always"
+elk_container_state: "started"
+volumes_default_dir: "/dockernovo"
+elk_default_dir: "{{ volumes_default_dir }}/elk"
+elk_subdir: ["data","pipeline"]
+elk_src: "pipeline"
+elk_dest: "{{ elk_default_dir }}"
+dir_mode: 0775
+
+ipelastic: 172.20.1.29
+elastic_container_name: "elk_elastic_ansible"
+elastic_container_hostname: "{{ elastic_container_name }}_host"
+elastic_container_image: "docker.elastic.co/elasticsearch/elasticsearch:7.8.0"
+elastic_container_ports:
+  - "9200"
+  - "9300"
+
+iplogstash: 172.20.1.30
+logstash_container_name: "elk_logstash_ansible"
+logstash_container_hostname: "{{ logstash_container_name }}_host"
+logstash_container_image: "docker.elastic.co/logstash/logstash:7.8.0"
+logstash_container_ports:
+  - "5000"
+  - "9600"
+
+ipkibana: 172.20.1.31
+kibana_container_name: "elk_kibana_ansible"
+kibana_container_hostname: "{{ kibana_container_name }}_host"
+kibana_container_image: "docker.elastic.co/kibana/kibana:7.8.0"
+kibana_container_ports:
+  - "5601"
+
+vol_loop:
+  - vol: "vol_elk_data"
+    device: "/dockernovo/elk/data"
+  - vol: "vol_elk_pipeline"
+    device: "/dockernovo/elk/pipeline"
+
+elk_data_vol: vol_elk_data:/usr/share/elasticsearch/data:rw
+elk_pipeline_vol:  vol_elk_pipeline:/usr/share/logstash/pipeline:rw
+
+elk_containers: ["elk_elastic_ansible","elk_logstash_ansible","elk_kibana_ansible"]
+
+
+
+elk:
+  elastic:
+    envs:
+      node.name: "elasticsearch"
+      cluster.name: "brq-cloud"
+      cluster.initial_master_nodes: "elasticsearch"
+      DISCOVERY_TYPE: "single-node"
+      NETWORK_HOST: "0.0.0.0"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      XPACK_LICENSE_SELF_GENERATED_TYPE: "trial"
+      XPACK_SECURITY_ENABLED: "true"
+      XPACK_MONITORING_COLLECTION_ENABLED: "true"
+      ELASTIC_PASSWORD: "Dj439B0AkXo8mr8E"
+  logstash:
+    envs:
+      HTTP_HOST: "0.0.0.0"
+      XPACK_MONITORING_ELASTICSEARCH_HOSTS: "http://172.20.1.29:9200"
+      XPACK_MONITORING_ENABLED: "true"
+      XPACK_MONITORING_ELASTICSEARCH_USERNAME: "elastic"
+      XPACK_MONITORING_ELASTICSEARCH_PASSWORD: "Dj439B0AkXo8mr8E"
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+  kibana:
+    envs:
+      SERVER_NAME: "kibana"
+      SERVER_HOST: "0.0.0.0"
+      ELASTICSEARCH_HOSTS: "http://172.20.1.29:9200"
+      ELASTICSEARCH_URL: "http://172.20.1.29:9200"
+      MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: "true"
+      SERVER_BASEPATH: "/kibana"

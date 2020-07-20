@@ -1,0 +1,8 @@
+---
+  - name: Creating directory structure
+    file:
+      path: "{{zabbix_default_dir}}/{{ item }}"
+      state: directory
+      mode: "{{ dir_mode }}"
+      recurse: yes
+    with_items: "{{ zabbix_subdir }}"

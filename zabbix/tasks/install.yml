@@ -1,0 +1,9 @@
+---
+  - include: structure.yml
+#  - include: config.yml
+  - include: volumes.yml
+  - include: deploy_mysql.yml
+  - include: deploy_java.yml
+  - include: deploy_snmptraps.yml
+  - include: deploy_server.yml
+  - include: deploy_web.yml

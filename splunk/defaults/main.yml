@@ -1,0 +1,79 @@
+---
+#####################
+### Role options
+#####################
+cloud_net: "brq_net"
+splunk_container_image: "splunk/splunk:latest"
+splunk_container_restart_policy: "always"
+splunk_container_state: "started"
+volumes_default_dir: "/dockernovo"
+splunk_default_dir: "{{ volumes_default_dir }}/splunk"
+splunk_subdir: ["etc","var","driver","config"]
+splunk_src: "config"
+splunk_dest: "{{ splunk_default_dir }}"
+dir_mode: 0775
+splunk_containers: ["splunk_sh_ansible","splunk_cm_ansible","splunk_idx_ansible"]
+
+ipsplksh: 172.20.1.26
+sh_container_name: "splunk_sh_ansible"
+sh_container_hostname: "{{ sh_container_name }}_host"
+sh_container_ports:
+  - "8000"
+  - "8089"
+
+ipsplkcm: 172.20.1.27
+cm_container_name: "splunk_cm_ansible"
+cm_container_hostname: "{{ cm_container_name }}_host"
+cm_container_ports:
+  - "8000"
+  - "8089"
+
+ipsplkidx: 172.20.1.28
+idx_container_name: "splunk_idx_ansible"
+idx_container_hostname: "{{ idx_container_name }}_host"
+idx_container_ports:
+  - "8000"
+  - "8088"
+  - "8089"
+
+vol_loop:
+  - vol: "vol_splunk_etc"
+    device: "/dockernovo/splunk/etc"
+  - vol: "vol_splunk_var"
+    device: "/dockernovo/splunk/var"
+  - vol: "vol_splunk_driver"
+    device: "/dockernovo/splunk/driver"
+  - vol: "vol_splunk_defaults"
+    device: "/dockernovo/splunk/config"
+
+
+splunk_etc_vol: vol_splunk_etc:/opt/splunk/etc:rw
+splunk_var_vol:  vol_splunk_var:/opt/splunk/var:rw
+splunk_driver_vol: vol_splunk_driver:/opt/splunk/etc/splunk_app_db_connect/drivers:rw
+splunk_defaults_vol: vol_splunk_defaults:/tmp/defaults:rw
+
+splunk:
+  sh:
+    envs:
+      SPLUNK_START_ARGS: "--accept-license"
+      SPLUNK_INDEXER_URL: "splunk_idx_ansible"
+      SPLUNK_SEARCH_HEAD_URL: "splunk_sh_ansible"
+      SPLUNK_CLUSTER_MASTER_URL: "splunk_cm_ansible"
+      SPLUNK_ROLE: "splunk_search_head"
+      SPLUNK_PASSWORD: "l3on4rdo"
+  cm:
+    envs:
+      SPLUNK_START_ARGS: "--accept-license"
+      SPLUNK_INDEXER_URL: "splunk_idx_ansible"
+      SPLUNK_SEARCH_HEAD_URL: "splunk_sh_ansible"
+      SPLUNK_CLUSTER_MASTER_URL: "splunk_cm_ansible"
+      SPLUNK_ROLE: "splunk_cluster_master"
+      SPLUNK_PASSWORD: "l3on4rdo"
+  idx:
+    envs:
+      SPLUNK_START_ARGS: "--accept-license"
+      SPLUNK_INDEXER_URL: "isplunk_idx_ansible"
+      SPLUNK_SEARCH_HEAD_URL: "splunk_sh_ansible"
+      SPLUNK_CLUSTER_MASTER_URL: "splunk_cm_ansible"
+      SPLUNK_ROLE: "splunk_indexer"
+      SPLUNK_PASSWORD: "l3on4rdo"

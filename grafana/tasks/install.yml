@@ -1,0 +1,4 @@
+---
+  - include: structure.yml
+  - include: volumes.yml
+  - include: deploy.yml

@@ -1,0 +1,14 @@
+---
+  - name: Deploy kibana container
+    docker_container:
+      name: "{{ kibana_container_name }}"
+      hostname: "{{ kibana_container_hostname }}"
+      image: "{{ kibana_container_image }}"
+      state: "{{ elk_container_state }}"
+      restart_policy: "{{ elk_container_restart_policy }}"
+      ports: "{{ kibana_container_ports}}"
+      env: "{{ elk.kibana.envs }}"
+      networks:
+         - name: "{{ cloud_net }}"
+           ipv4_address: "{{ ipkibana }}"
+      purge_networks: yes

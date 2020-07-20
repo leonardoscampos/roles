@@ -1,0 +1,17 @@
+---
+  - name: Deploy Mysql Zabbix container
+    docker_container:
+      name: "{{ zabbix_mysql_container_name }}"
+      hostname: "{{ zabbix_mysql_container_hostname }}"
+      image: "{{ zabbix_mysql_container_image }}"
+      command: "{{ zabbix.mysql.commands }}"
+      state: "{{ zabbix_container_state }}"
+      restart_policy: "{{ zabbix_container_restart_policy }}"
+      ports: "{{ zabbix_mysql_container_ports }}"
+      env: "{{ zabbix.mysql.envs }}"
+      volumes: "{{ zabbix_mysql_vol }}"
+      networks:
+         - name: "{{ cloud_net }}"
+           ipv4_address: "{{ ipmysql }}"
+           aliases: "{{ zabbix_mysql_container_name }}"
+      purge_networks: yes

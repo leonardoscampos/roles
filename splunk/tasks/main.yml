@@ -1,0 +1,14 @@
+---
+  - name: Get infos on container
+    docker_container_info:
+      name: "{{ sh_container_name }}"
+    register: result
+    check_mode: yes
+
+  #- name: Uninstall Splunk
+  - import_tasks: uninstall.yml
+    when: result.exists == true
+
+#  - name: Install Splunk
+  - import_tasks: install.yml
+    when: result.exists == false

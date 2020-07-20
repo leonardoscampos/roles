@@ -1,0 +1,16 @@
+---
+ - name: Deploy Java Gateway Zabbix container
+   docker_container:
+     name: "{{ zabbix_java_container_name }}"
+     hostname: "{{ zabbix_java_container_hostname }}"
+     image: "{{ zabbix_java_container_image }}"
+     state: "{{ zabbix_container_state }}"
+     restart_policy: "{{ zabbix_container_restart_policy }}"
+     ports: "{{ zabbix_java_container_ports }}"
+     env: "{{ zabbix.java.envs }}"
+     volumes: "{{ zabbix_java_ext_vol }}"
+     networks:
+        - name: "{{ cloud_net }}"
+          ipv4_address: "{{ ipzabjava }}"
+          aliases: "{{ zabbix_java_container_name }}"
+     purge_networks: yes

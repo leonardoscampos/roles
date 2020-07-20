@@ -1,0 +1,87 @@
+---
+#####################
+### Role options
+#####################
+cloud_net: "brq_net"
+graylog_container_restart_policy: "always"
+graylog_container_state : "started"
+volumes_default_dir: "/dockernovo"
+graylog_default_dir: "{{ volumes_default_dir }}/graylog"
+graylog_subdir: ["data","elastic","journal","config","plugin"]
+#graylog_src: "pipeline"
+#graylog_dest: "{{ zabbix_default_dir }}"
+dir_mode: 0775
+
+
+ipmongodb: 172.20.1.21
+graylog_mongodb_container_name: "graylog_mongodb_ansible"
+graylog_mongodb_container_hostname: "{{ graylog_mongodb_container_name }}_host"
+graylog_mongodb_container_image: "mysql:8.0"
+graylog_mongodb_container_ports: "3306"
+graylog_mongodb_container_volumes:
+  - "vol-graylog-mongodb:/data/db:rw"
+
+ipgrayelastic: 172.20.1.22
+graylog_elastic_container_name: "graylog_elastic_ansible"
+graylog_elastic_container_hostname: "{{ graylog_elastic_container_name }}_host"
+graylog_elastic_container_image: "docker.elastic.co/elasticsearch/elasticsearch:6.8.9"
+graylog_elastic_container_ports:
+  - "9200"
+  - "9300"
+graylog_elastic_container_volumes:
+  - "vol-graylog-elastic:/usr/share/elasticsearch/data:rw"
+
+ipgraylog: 172.20.1.23
+graylog_server_container_name: "graylog_server_ansible"
+graylog_server_container_hostname: "{{ graylog_server_container_name }}_host"
+graylog_server_container_image: "graylog/graylog:3.3"
+graylog_server_container_ports:
+  - "9000"
+  - "154"
+  - "154/udp"
+  - "12201"
+  - "12201/udp"
+graylog_server_container_links:
+  - graylog_mongodb_ansible:mongo
+  - graylog_elastic_ansible:elasticsearch
+graylog_server_container_volumes:
+  - "vol-graylog-journal:/usr/share/graylog/data/journal:rw"
+  - "vol-graylog-config:/usr/share/graylog/data/config:rw"
+  - "vol-graylog-plugin:/usr/share/graylog/plugin:rw"
+
+
+vol_loop:
+  - vol: "vol_graylog_mongodb"
+    device: /dockernovo/graylog/data
+  - vol: "vol_graylog_elastic"
+    device: /dockernovo/graylog/elastic
+  - vol: "vol_graylog_journal"
+    device: /dockernovo/graylog/journal
+  - vol: "vol_graylog_config"
+    device: /dockernovo/graylog/config
+  - vol: "vol_graylog_plugin"
+    device: /dockernovo/graylog/plugin
+
+graylog_containers: ["graylog_mongodb_ansible","graylog_elastic_ansible","graylog_server_ansible"]
+
+graylog:
+    elastic:
+      envs:
+        node.name: "elastic-graylog"
+        DISCOVERY_TYPE: "single-node"
+        NETWORK_HOST: "0.0.0.0"
+        ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+        XPACK_LICENSE_SELF_GENERATED_TYPE: "trial"
+        XPACK_SECURITY_ENABLED: "true"
+        XPACK_MONITORING_COLLECTION_ENABLED: "true"
+        ELASTIC_PASSWORD: "Dj439B0AkXo8mr8E"
+
+    server:
+      envs:
+        TZ: "America/Sao_Paulo"
+        GRAYLOG_PASSWORD_SECRET: "4UAaw95b3fRrm7c7"
+        GRAYLOG_ROOT_PASSWORD_SHA2: "DC317E2D2AD0A69F1CB333AB87C137C16AC264A77E20DA553801AC4487857A56"
+        GRAYLOG_WEB_ENDPOINT_URI: "https://cloudmonitoring.brq.com/graylog/api"
+        GRAYLOG_ELASTICSEARCH_HOSTS: "http://graylog_elastic_ansible:9200"
+        GRAYLOG_HTTP_EXTERNAL_URI: "https://cloudmonitoring.brq.com/graylog/"
+        ELASTICSEARCH_HOSTS: "graylog_elastic_ansible"

@@ -1,0 +1,16 @@
+---
+  - name: Deploy Grafana container
+    docker_container:
+      name: "{{ grafana_container_name }}"
+      hostname: "{{ grafana_container_hostname }}"
+      image: "{{ grafana_container_image }}"
+      state: "{{ grafana_container_state }}"
+      restart_policy: "{{ grafana_container_restart_policy }}"
+      ports: "{{ grafana_container_ports }}"
+      env: "{{ grafana.server.envs }}"
+      volumes: "{{ grafana_container_volumes }}"
+      networks:
+         - name: "{{ cloud_net }}"
+           ipv4_address: "{{ ipgrafana }}"
+           aliases: "{{ grafana_container_name }}"
+      purge_networks: yes

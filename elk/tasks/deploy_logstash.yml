@@ -1,0 +1,16 @@
+---
+  - name: Deploy logstash container
+    docker_container:
+      name: "{{ logstash_container_name }}"
+      hostname: "{{ logstash_container_hostname }}"
+      image: "{{ logstash_container_image }}"
+      state: "{{ elk_container_state }}"
+      restart_policy: "{{ elk_container_restart_policy }}"
+      ports: "{{ logstash_container_ports }}"
+      env: "{{ elk.logstash.envs }}"
+      networks:
+         - name: "{{ cloud_net }}"
+           ipv4_address: "{{ iplogstash }}"
+      purge_networks: yes
+      volumes:
+         - "{{ elk_pipeline_vol }}"

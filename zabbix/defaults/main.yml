@@ -1,0 +1,148 @@
+---
+#####################
+### Role options
+#####################
+cloud_net: "brq_net"
+zabbix_container_restart_policy: "always"
+zabbix_container_state: "started"
+volumes_default_dir: "/dockernovo"
+zabbix_default_dir: "{{ volumes_default_dir }}/zabbix"
+zabbix_subdir: ["agent","modules","enc","alertscripts","externalscripts","ssl/certs","ssl/keys","ssl/ssl_ca","snmptraps","mibs","nginx","mysql","ssh_keys","export","java_ext"]
+#zabbix_src: "pipeline"
+#zabbix_dest: "{{ zabbix_default_dir }}"
+dir_mode: 0775
+
+ipmysql: 172.20.1.21
+zabbix_mysql_container_name: "zabbix_mysql_ansible"
+zabbix_mysql_container_hostname: "{{ zabbix_mysql_container_name }}_host"
+zabbix_mysql_container_image: "mysql:8.0"
+zabbix_mysql_container_ports: "3306"
+
+ipzabjava: 172.20.1.22
+zabbix_java_container_name: "zabbix_java_ansible"
+zabbix_java_container_hostname: "{{ zabbix_java_container_name }}_host"
+zabbix_java_container_image: "zabbix/zabbix-java-gateway:ubuntu-trunk"
+zabbix_java_container_ports: "10052"
+
+ipzabsmnp: 172.20.1.23
+zabbix_snmptraps_container_name: "zabbix_snmptraps_ansible"
+zabbix_snmptraps_container_hostname: "{{ zabbix_snmptraps_container_name }}_host"
+zabbix_snmptraps_container_image: "zabbix/zabbix-snmptraps:ubuntu-trunk"
+zabbix_snmptraps_container_ports: "162/udp"
+
+ipzabserver: 172.20.1.24
+zabbix_server_container_name: "zabbix_server_ansible"
+zabbix_server_container_hostname: "{{ zabbix_server_container_name }}_host"
+zabbix_server_container_image: "zabbix/zabbix-server-mysql:ubuntu-trunk"
+zabbix_server_container_ports: "10051"
+zabbix_server_container_ulimits:
+  - nproc:65535
+  - nofile:20000:40000
+
+ipzabweb: 172.20.1.25
+zabbix_web_container_name: "zabbix_web_ansible"
+zabbix_web_container_hostname: "{{ zabbix_web_container_name }}_host"
+zabbix_web_container_image: "zabbix/zabbix-web-nginx-mysql:ubuntu-trunk"
+zabbix_web_container_ports:
+  - "8080"
+  - "8443"
+
+
+
+vol_loop:
+- vol: "vol_zabbix_agent"
+  device: "/dockernovo/zabbix/agent"
+- vol: "vol_zabbix_modules"
+  device: "/dockernovo/zabbix/modules"
+- vol: "vol_zabbix_enc"
+  device: "/dockernovo/zabbix/enc"
+- vol: "vol_zabbix_alertscripts"
+  device: "/dockernovo/zabbix/alertscripts"
+- vol: "vol_zabbix_externalscripts"
+  device: "/dockernovo/zabbix/externalscripts"
+- vol: "vol_zabbix_ssl_certs"
+  device: "/dockernovo/zabbix/ssl/certs"
+- vol: "vol_zabbix_ssl_keys"
+  device: "/dockernovo/zabbix/ssl/keys"
+- vol: "vol_zabbix_ssl_ca"
+  device: "/dockernovo/zabbix/ssl/ssl_ca"
+- vol: "vol_zabbix_snmptraps"
+  device: "/dockernovo/zabbix/snmptraps"
+- vol: "vol_zabbix_mibs"
+  device: "/dockernovo/zabbix/mibs"
+- vol: "vol_zabbix_ngnix"
+  device: "/dockernovo/zabbix/nginx"
+- vol: "vol_zabbix_mysql"
+  device: "/dockernovo/zabbix/mysql"
+- vol: "vol_zabbix_ssh_keys"
+  device: "/dockernovo/zabbix/ssh_keys"
+- vol: "vol_zabbix_export"
+  device: "/dockernovo/zabbix/export"
+- vol: "vol_zabbix_java_ext"
+  device: "/dockernovo/zabbix/java_ext"
+
+zabbix_agent_vol: vol_zabbix_agent:/etc/zabbix/zabbix_agentd.d:rw
+zabbix_modules_vol: vol_zabbix_modules:/var/lib/zabbix/modules:rw
+zabbix_enc_vol: vol_zabbix_enc:/var/lib/zabbix/enc:rw
+zabbix_alertscripts_vol: vol_zabbix_alertscripts:/usr/lib/zabbix/alertscripts:rw
+zabbix_externalscripts_vol: vol_zabbix_externalscripts:/usr/lib/zabbix/externalscripts:rw
+zabbix_ssl_certs_vol: vol_zabbix_ssl_certs:/var/lib/zabbix/ssl/certs:rw
+zabbix_ssl_keys_vol: vol_zabbix_ssl_keys:/var/lib/zabbix/ssl/keys:rw
+zabbix_ssl_ca_vol: vol_zabbix_ssl_ca:/var/lib/zabbix/ssl/ssl_ca:rw
+zabbix_snmptraps_vol: vol_zabbix_snmptraps:/var/lib/zabbix/snmptraps:rw
+zabbix_mibs_vol: vol_zabbix_mibs:/var/lib/zabbix/mibs:rw
+zabbix_ngnix_vol: vol_zabbix_ngnix:/etc/ssl/nginx:rw
+zabbix_mysql_vol: vol_zabbix_mysql:/var/lib/mysql:rw
+zabbix_ssh_keys_vol: vol_zabbix_ssh_keys:/var/lib/zabbix/ssh_keys:rw
+zabbix_export_vol: vol_zabbix_export:/var/lib/zabbix/export:rw
+zabbix_java_ext_vol: vol_zabbix_java_ext:/usr/sbin/zabbix_java/ext_lib:rw
+zabbix_localtime: /etc/localtime:/etc/localtime:ro
+
+zabbix_containers: ["zabbix_mysql_ansible","zabbix_java_ansible","zabbix_snmptraps_ansible","zabbix_server_ansible","zabbix_web_ansible"]
+
+zabbix:
+  mysql:
+    commands: ["mysqld", "--character-set-server=utf8" , "--collation-server=utf8_bin", "--default-authentication-plugin=mysql_native_password"]
+    envs:
+      MYSQL_USER: "zabuser"
+      MYSQL_PASSWORD: "Db4c86DEy"
+      MYSQL_ROOT_PASSWORD: "Db4c86DEy"
+      MYSQL_DATABASE: "zabdb"
+  java:
+    envs:
+       ZBX_START_POLLERS: "5"
+       ZBX_TIMEOUT: "3"
+      # Possible: "values: trace, debug, info, want, error, all, off"
+       ZBX_DEBUGLEVEL: "info"
+  server:
+    sysctls:
+      net.ipv4.ip_local_port_range: "1024 65000"
+      net.ipv4.conf.all.accept_redirects: "0"
+      net.ipv4.conf.all.secure_redirects: "0"
+      net.ipv4.conf.all.send_redirects: "0"
+    envs:
+      ZBX_JAVAGATEWAY_ENABLE: "true"
+      ZBX_JAVAGATEWAY: "zabbix_java_ansible"
+      ZBX_JAVAGATEWAYPORT: "10052"
+      ZBX_STARTJAVAPOLLERS: "5"
+      ZBX_ENABLE_SNMP_TRAPS: "true"
+      MYSQL_USER: "zabuser"
+      MYSQL_PASSWORD: "Db4c86DEy"
+      MYSQL_ROOT_PASSWORD: "Db4c86DEy"
+      MYSQL_DATABASE: "zabdb"
+      DB_SERVER_HOST: "zabbix_mysql_ansible"
+  web:
+    sysctls:
+      net.core.somaxconn: "65535"
+    envs:
+      ZBX_SERVER_HOST: "zabbix_server_ansible"
+      ZBX_SERVER_PORT: "10051"
+      ZBX_SERVER_NAME: "BRQ Digital Solutions"
+      PHP_TZ: "America/Sao_Paulo"
+      MYSQL_USER: "zabuser"
+      MYSQL_PASSWORD: "Db4c86DEy"
+      MYSQL_ROOT_PASSWORD: "Db4c86DEy"
+      MYSQL_DATABASE: "zabdb"
+      DB_SERVER_HOST: "zabbix_mysql_ansible"
+      ZBX_HISTORYSTORAGEURL: "http://172.20.1.29:9200/"
+      ZBX_HISTORYSTORAGETYPES: "['uint', 'dbl', 'str', 'text', 'log']"

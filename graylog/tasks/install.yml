@@ -1,0 +1,6 @@
+---
+  - include: structure.yml
+  - include: volumes.yml
+  - include: deploy_mongodb.yml
+  - include: deploy_elastic.yml
+  - include: deploy_graylog.yml

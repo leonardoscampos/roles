@@ -1,0 +1,15 @@
+---
+  - name: Deploy Graylog Server container
+    docker_container:
+      name: "{{ graylog_server_container_name }}"
+      hostname: "{{ graylog_server_container_hostname }}"
+      image: "{{ graylog_server_container_image }}"
+      state: "{{ graylog_container_state }}"
+      restart_policy: "{{ graylog_container_restart_policy }}"
+      ports: "{{ graylog_server_container_ports }}"
+      volumes: "{{ graylog_server_container_volumes }}"
+      env: "{{ graylog.server.envs }}"
+      networks:
+         - name: "{{ cloud_net }}"
+           ipv4_address: "{{ ipnginx }}"
+      purge_networks: yes

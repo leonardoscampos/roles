@@ -1,0 +1,5 @@
+---
+loop_containers:
+  - container: elastic_ansible
+  - container: logstash_ansible
+  - container: kibana_ansible

@@ -1,0 +1,7 @@
+---
+  - include: structure.yml
+  - include: config.yml
+  - include: volumes.yml
+  - include: deploy_elastic.yml
+  - include: deploy_logstash.yml
+  - include: deploy_kibana.yml

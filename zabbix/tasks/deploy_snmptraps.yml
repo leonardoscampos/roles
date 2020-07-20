@@ -1,0 +1,17 @@
+---
+  - name: Deploy Snmptraps Zabbix container
+    docker_container:
+      name: "{{ zabbix_snmptraps_container_name }}"
+      hostname: "{{ zabbix_snmptraps_container_hostname }}"
+      image: "{{ zabbix_snmptraps_container_image }}"
+      state: "{{ zabbix_container_state }}"
+      restart_policy: "{{ zabbix_container_restart_policy }}"
+      ports: "{{ zabbix_snmptraps_container_ports }}"
+      volumes:
+         - "{{ zabbix_snmptraps_vol }}"
+         - "{{ zabbix_mibs_vol }}"
+      networks:
+         - name: "{{ cloud_net }}"
+           ipv4_address: "{{ ipzabsmnp }}"
+           aliases: "{{ zabbix_snmptraps_container_name }}"
+      purge_networks: yes

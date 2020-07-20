@@ -1,0 +1,7 @@
+---
+  - name: Tranfering config to logstash
+    copy:
+      src: "{{ item }}"
+      dest: "{{ elk_dest }}"
+      mode: "{{ dir_mode }}"
+    with_items: "{{ elk_src }}"

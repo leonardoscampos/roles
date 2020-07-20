@@ -1,0 +1,10 @@
+---
+  - name: Creating Volumes for Splunk Stack
+    docker_volume:
+      name: '{{ item.vol }}'
+      labels: {}
+      driver_options:
+         device: '{{ item.device }}'
+         type: none
+         o: bind
+    loop: "{{vol_loop}}"

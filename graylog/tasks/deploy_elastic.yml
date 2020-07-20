@@ -1,0 +1,17 @@
+---
+  - name: Deploy Graylog Elasticsearch
+    docker_container:
+      name: "{{ graylog_elastic_container_name }}"
+      hostname: "{{ graylog_elastic_container_hostname }}"
+      image: "{{ graylog_elastic_container_image }}"
+      state: "{{ graylog_container_state }}"
+      restart_policy: "{{ graylog_container_restart_policy }}"
+      ports: "{{ graylog_elastic_container_ports }}"
+      volumes: "{{ graylog_elastic_container_volumes }}"
+      env: "{{ graylog.elastic.envs }}"
+      ulimits: memlock:-1:-1
+      networks:
+         - name: "{{ cloud_net }}"
+           ipv4_address: "{{ ipgrayelastic }}"
+           aliases: "{{ graylog_elastic_container_name }}"
+      purge_networks: yes

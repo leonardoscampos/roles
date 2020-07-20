@@ -1,0 +1,15 @@
+---
+  - name: Deploy Mongodb container
+    docker_container:
+      name: "{{ graylog_mongodb_container_name }}"
+      hostname: "{{ graylog_mongodb_container_hostname }}"
+      image: "{{ graylog_mongodb_container_image }}"
+      state: "{{ graylog_container_state }}"
+      restart_policy: "{{ graylog_container_restart_policy }}"
+      ports: "{{ graylog_mongodb_container_ports }}"
+      volumes: "{{ graylog_mongodb_container_volumes }}"
+      networks:
+         - name: "{{ cloud_net }}"
+           ipv4_address: "{{ ipmongodb }}"
+           aliases: "{{ graylog_mongodb_container_name }}"
+      purge_networks: yes

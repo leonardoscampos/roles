@@ -1,0 +1,17 @@
+---
+ - name: Deploy elasticsearch container
+   docker_container:
+    name: "{{ elastic_container_name }}"
+    hostname: "{{ elastic_container_hostname }}"
+    image: "{{ elastic_container_image }}"
+    state: "{{ elk_container_state }}"
+    restart_policy: "{{ elk_container_restart_policy }}"
+    ports: "{{ elastic_container_ports }}"
+    env: "{{ elk.elastic.envs }}"
+    ulimits: memlock:-1:-1
+    networks:
+      - name: "{{ cloud_net }}"
+        ipv4_address: "{{ ipelastic }}"
+    purge_networks: yes
+    volumes:
+      - "{{ elk_data_vol }}"

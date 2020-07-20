@@ -1,0 +1,30 @@
+---
+  - name: Deploy Zabbix Server container
+    docker_container:
+      name: "{{ zabbix_server_container_name }}"
+      hostname: "{{ zabbix_server_container_hostname }}"
+      image: "{{ zabbix_server_container_image }}"
+      state: "{{ zabbix_container_state }}"
+      restart_policy: "{{ zabbix_container_restart_policy }}"
+      ports: "{{ zabbix_server_container_ports }}"
+      env: "{{ zabbix.server.envs }}"
+      volumes:
+         - "{{ zabbix_snmptraps_vol }}"
+         - "{{ zabbix_alertscripts_vol }}"
+         - "{{ zabbix_export_vol }}"
+         - "{{ zabbix_externalscripts_vol }}"
+         - "{{ zabbix_modules_vol }}"
+         - "{{ zabbix_enc_vol }}"
+         - "{{ zabbix_ssh_keys_vol }}"
+         - "{{ zabbix_mibs_vol }}"
+         - "{{ zabbix_localtime }}"
+         - "{{ zabbix_ssl_certs_vol }}"
+         - "{{ zabbix_ssl_keys_vol }}"
+         - "{{ zabbix_ssl_ca_vol }}"
+      ulimits: "{{ zabbix_server_container_ulimits }}"
+      sysctls: "{{ zabbix.server.sysctls }}"
+      networks:
+         - name: "{{ cloud_net }}"
+           ipv4_address: "{{ ipzabserver }}"
+           aliases: "{{ zabbix_server_container_name }}"
+      purge_networks: yes
